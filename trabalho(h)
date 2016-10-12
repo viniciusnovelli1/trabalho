@@ -1,0 +1,18 @@
+typedef struct bloco{
+  char nome[50];
+  struct bloco *prox, *ant;
+} no;
+
+typedef struct{
+  no *fim, *ini;
+} Lista;
+
+typedef struct Pilha{
+  no *topo;
+} pilha;
+
+void cria(Lista *);
+void cadastrar(Lista *, char *, int *);
+void listaprodutos(Lista *);
+//void imprimir;
+//void lance;
