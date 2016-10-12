@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "trabalho.h"
+
+int main(){
+  
+  int opcao, index = 0, erro;
+  char nome[50];
+  Lista L;
+
+  cria(&L);
+  do{
+    //começa o TAD dinâmico
+    //system("clear");
+    printf("+----------------------------------------+\n| Cod | Opcao                            |\n+----------------------------------------+\n|  1  | Cadastrar produto                |\n|  2  | Listar produtos e lances         |\n|  3  | Dar um lance                     |\n|  4  | Listar outros produtos p/ lances |\n|  5  | Encerrar leilao                  |\n+----------------------------------------+\n");
+    scanf("%d", &opcao);
+    
+    if(opcao < 1 || opcao > 5){
+      system("clear");
+      index = 0;
+    }
+    if(opcao == 1){
+      printf("Entre com o nome do produto: ");
+      scanf(" %s", nome);
+      cadastrar(&L,nome,&erro);
+      if(erro == 1){
+	printf("Erro no cadastro.\n");
+      } else if(erro == 2){
+	printf("Produto ja cadastrado.\n");
+      } else if(erro == 0){
+	printf("Produto cadastrado.\n");
+      }
+    }
+    if(opcao == 2){
+      listaprodutos(&L);
+    }
+    if(opcao == 3){
+    }
+    if(opcao == 4){
+    }
+    if(opcao == 5){
+    }
+  }while(index==0);
+  
+  return 0;
+}
