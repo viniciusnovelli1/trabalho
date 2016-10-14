@@ -5,10 +5,15 @@
 int main(){
   
   int opcao, index = 0, erro;
-  char nome[50];
+  char produto[50], nome[50];
+  float valor;
   Lista L;
+  Pilha P;
+  Fila F;
 
-  cria(&L);
+  criapilha(&P);
+  crialista(&L);
+  criafila(&F);
   do{
     //começa o TAD dinâmico
     //system("clear");
@@ -21,8 +26,8 @@ int main(){
     }
     if(opcao == 1){
       printf("Entre com o nome do produto: ");
-      scanf(" %s", nome);
-      cadastrar(&L,nome,&erro);
+      scanf(" %s", produto);
+      cadastrarproduto(&L,produto,&erro);
       if(erro == 1){
 	printf("Erro no cadastro.\n");
       } else if(erro == 2){
@@ -35,6 +40,22 @@ int main(){
       listaprodutos(&L);
     }
     if(opcao == 3){
+      printf("Entre com seu nome: ");
+      scanf(" %s", nome);
+      printf("Entre com o nome do produto: ");
+      scanf(" %s", produto);
+      printf("Entre com o valor do lance: ");
+      scanf("%f", &valor);
+      cadastrarlance(&L,nome,produto,&valor,&erro);
+      if(erro == 2){
+	printf("Produto nao encontrado.\n");
+      }
+      if(erro == 1){
+	printf("Falha no cadastro.\n");
+      }
+      if(erro == 0){
+	printf("Lance cadastrado.\n");
+      }
     }
     if(opcao == 4){
     }
