@@ -3,65 +3,71 @@
 #include <string.h>
 #include "trabalho.h"
 
-void cria(Lista *L){
-  L->ini = NULL;
-  L->fim = NULL;
+void crialista(Lista *L){
+  L->inilista = NULL;
+  L->fimlista = NULL;
 }
 
-void cadastrar(Lista *L, char *nome, int *erro){
-  no *p = (no *)malloc(sizeof(no));
-  no *aux = L->ini;
+void criapilha(Pilha *P){
+  P->topo = NULL;
+}
+
+void criafila(Fila *F){
+  F->inifila = NULL;
+  F->fimfila = NULL;
+}
+
+void cadastrarproduto(Lista *L, char *nome, int *erro){
+  nolista *li = (nolista *)malloc(sizeof(nolista));
+  nolista *aux = L->inilista;
   int ordnome = -1;
   
-  if(p == NULL){
+  if(li == NULL){
     *erro = 1;
     return;
   } else {
-    strcpy(p->nome,nome);
-    if(L->ini == NULL){
-      L->ini = p;
-      L->fim = p;
-      p->prox = NULL;
-      p->ant = NULL;
+    strcpy(li->nomeproduto,nome);
+    if(L->inilista == NULL){
+      L->inilista = li;
+      L->fimlista = li;
+      li->prox = NULL;
+      li->ant = NULL;
       return;
     } else {
       while(ordnome < 0){
-	ordnome = strcmp(aux->nome,p->nome);
+	ordnome = strcmp(aux->nomeproduto,li->nomeproduto);
 	if(ordnome > 0){
+	  ordnome = 1;
 	  break;
 	}
 	if(aux->prox == NULL){
-	  //ordnome = 1;
+	  ordnome = 2;
 	  break;
 	}
 	aux = aux->prox;
-      }
-
-      
+      }      
       if(ordnome == 0){
       	*erro = 2;
       	return;
       } else {
-	//ordnome = 0;
-	if(aux->prox == NULL && aux->ant == NULL){
-	  p->ant = aux;
-	  p->prox = NULL;
-	  L->fim = p;
-	  aux->prox = p;
-	  return;
-	} else if(aux->prox == NULL && aux->ant != NULL){
-	  ordnome = strcmp(aux->ant->nome,p->nome);
-	  if((strcmp(aux->ant->nome,p->nome) < 0) && (strcmp(aux->nome,p->nome) > 0)){
-	    p->prox = aux;
-	    p->ant = aux->ant;
-	    aux->ant = p;
-	    (aux->ant)->prox = p;
-	    return;
-	  } else {
-	    p->prox = NULL;
-	    aux->prox = p;
-	    p->ant = aux;
-	    return;
+	*erro = 0;
+	if(L->inilista == aux && ordnome == 1){
+	  L->inilista = li;
+	  li->prox = aux;
+	  aux->ant = li;
+	  li->ant = NULL;
+	} else {
+	  if(ordnome == 2){
+	    li->prox = NULL;
+	    li->ant = aux;
+	    aux->prox = li;
+	    L->fimlista = li;
+	  }
+	  if(ordnome == 1){
+	    li->prox = aux;
+	    li->ant = aux->ant;
+	    aux->ant->prox = li;
+	    aux->ant = li;
 	  }
 	}
       }
@@ -69,15 +75,134 @@ void cadastrar(Lista *L, char *nome, int *erro){
   }
 }
 
-void listaprodutos(Lista *L){
-  no *p = L->ini;
+void Push(Pilha *P, float *valor, int *erro){
+  nopilha *pi = (nopilha *)malloc(sizeof(nopilha));
 
-  if(p == NULL){
-    printf("Nenhum produto cadastrado.\n");
+  if(pi == NULL){
+    *erro = 1;
+    return;
   } else {
-    while(p != NULL){
-      printf("%s\n", p->nome);
-      p = p->prox;
+    *erro = 0;
+    pi->valor = *valor;
+    pi->users = NULL;
+    pi->prox = P->topo;
+    P->topo = pi;
+    return;
+  }
+}
+
+void Pop(Pilha *P, float *valor, int *erro){
+  nopilha *pi = P->topo;
+
+  if(P->topo == NULL){
+    *erro = 1;
+  } else {
+    *erro = 0;
+    *valor = P->topo->valor;
+    P->topo = P->topo->prox;
+    free(pi);
+  }
+}
+
+void EntraFila(Fila *F, char *nome, int *erro){
+  nofila *fi = (nofila *)malloc(sizeof(nofila));
+
+  if(fi == NULL){
+    *erro = 1;
+  } else {
+    *erro = 0;
+    strcpy(fi->nomepessoa, nome);
+    fi->fprox = NULL;
+    if(F->inifila == NULL){
+      F->inifila = fi;
+      F->fimfila = fi;
+    } else {
+      F->fimfila->fprox = fi;
+      F->fimfila = fi;
     }
+  }
+}
+
+void EsvaziaFila(Fila *F){
+  nofila *fi = F->inifila;
+
+  while(fi != NULL){
+    F->inifila = fi->fprox;
+    free(fi);
+    fi = F->inifila;
+  }
+}
+
+void cadastrarlance(Lista *L, char *nome, char *prod, float *valor, int *erro){
+  nopilha *pi = (nopilha *)malloc(sizeof(nopilha));
+  nofila *fi = (nofila *)malloc(sizeof(nofila));
+  nolista *li = L->inilista;
+  int ordnome = 1;
+
+  if(pi == NULL || fi == NULL){
+    *erro = 1;
+    return;
+  } else {
+    while(ordnome != 0){
+      ordnome = strcmp(prod,li->nomeproduto);
+      if(li == NULL){
+	*erro = 2;
+	return;
+      }
+      li = li->prox;
+    }
+    *erro = 0;
+    if(li->ant->lances == NULL){
+    Push(li->ant->lances,valor,erro);
+    } else {
+      if(li->ant->lances->topo->valor < *valor){
+	Push(li->ant->lances,valor,erro);
+      } else {
+	*erro = 3;
+      }
+      strcpy(fi->nomepessoa,nome);
+      Push(li->ant->lances,valor,erro);
+      EntraFila(pi->users,nome,erro);
+    }
+  }
+}
+
+void listalances(Pilha *P){
+  nopilha *pi = P->topo;
+
+  if(pi == NULL){
+    printf("Nenhum lance cadastrado");
+    return;
+  } else {
+
+  }
+}
+
+void listausers(Fila *F){
+
+}
+
+void listaprodutos(Lista *L){
+  nolista *li = L->inilista;
+
+  if(li == NULL){
+    printf("Nenhum produto cadastrado.\n");
+    return;
+  } else {
+    while(li != NULL){
+      printf("%s\n", li->nomeproduto);
+      li = li->prox;
+    }
+  }
+}
+
+
+void esvaziapilha(Pilha *P){
+  nopilha *pi = P->topo;
+
+  while(pi != NULL){
+    P->topo = pi->prox;
+    free(pi);
+    pi = P->topo;
   }
 }
