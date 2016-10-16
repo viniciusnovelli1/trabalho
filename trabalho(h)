@@ -1,18 +1,43 @@
-typedef struct bloco{
-  char nome[50];
-  struct bloco *prox, *ant;
-} no;
+typedef struct blocofila{
+  char nomepessoa[50];
+  struct blocofila *fprox;
+} nofila;
 
 typedef struct{
-  no *fim, *ini;
+  nofila *inifila, *fimfila;
+} Fila;
+
+typedef struct blocopilha{
+  float valor;
+  Fila *users;
+  struct blocopilha *prox;
+} nopilha;
+
+typedef struct pilha{
+  nopilha *topo;
+} Pilha;
+
+typedef struct blocolista{
+  char nomeproduto[50];
+  Pilha *lances;
+  struct blocolista *prox, *ant;
+} nolista;
+
+typedef struct{
+  nolista *fimlista, *inilista;
 } Lista;
 
-typedef struct Pilha{
-  no *topo;
-} pilha;
 
-void cria(Lista *);
-void cadastrar(Lista *, char *, int *);
-void listaprodutos(Lista *);
-//void imprimir;
-//void lance;
+void CriaLista(Lista *);
+void CriaPilha(Pilha *);
+void CriaFila(Fila *);
+void EntraLista(Lista *L, char *nome, int *erro);
+void Push(Pilha *P, float *valor, int *erro);
+void EntraFila(Fila *F, char *nome, int *erro);
+void Pop(Pilha *P, float *valor, int *erro);
+void CadastrarLance(Lista *L, char *nome, char *prod, float *valor, int *erro);
+void PrintPilha(Pilha *P);
+void PrintFila(Fila *F);
+void PrintLista(Lista *L);
+void EsvaziaPilha(Pilha *P);
+void EsvaziaFila(Fila *F);
